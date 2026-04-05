@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semana 1 — TJSC Arquiteto</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;color:#1a1a1a;background:#fff;padding:1.5rem}
+.wrap{max-width:860px;margin:0 auto;padding:1rem 0 2rem}
+h1{font-size:20px;font-weight:500;margin-bottom:4px;color:#1a1a1a}
+.page-sub{font-size:13px;color:#666;margin-bottom:1.5rem}
+.sec-label{font-size:11px;font-weight:500;color:#666;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.75rem;margin-top:1.5rem}
+.nav{display:flex;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap}
+.nav-btn{font-size:13px;font-weight:500;padding:6px 14px;border-radius:8px;border:0.5px solid #ccc;background:transparent;cursor:pointer;color:#555;transition:all .15s}
+.nav-btn.active{background:#dbeafe;color:#1e40af;border-color:transparent}
+.nav-btn:hover:not(.active){background:#f3f3f3}
+.panel{display:none}
+.panel.active{display:block}
+
+.day-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
+.day-title{font-size:18px;font-weight:500;color:#1a1a1a}
+.day-date{font-size:13px;color:#666;margin-top:2px}
+.day-badge{font-size:12px;font-weight:500;padding:3px 10px;border-radius:4px}
+
+.bloco{background:#fff;border:0.5px solid #e0e0e0;border-radius:12px;margin-bottom:10px;overflow:hidden}
+.bloco-header{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}
+.bloco-hora{font-size:12px;font-weight:500;color:#666;min-width:90px;white-space:nowrap}
+.bloco-tema{font-size:14px;font-weight:500;color:#1a1a1a;flex:1}
+.bloco-tag{font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.bloco-chevron{font-size:11px;color:#aaa;transition:transform .2s;margin-left:4px}
+.bloco.open .bloco-chevron{transform:rotate(180deg)}
+.bloco-body{display:none;padding:14px;border-top:0.5px solid #eee}
+.bloco.open .bloco-body{display:block}
+.bloco-body ul{padding-left:16px;margin:6px 0}
+.bloco-body li{font-size:13px;color:#555;line-height:1.7;margin-bottom:2px}
+.bloco-body strong{font-weight:500;color:#1a1a1a}
+.bloco-body p{font-size:13px;color:#555;line-height:1.7;margin-bottom:8px}
+.como-estudar{background:#f5f5f5;border-radius:8px;padding:10px 12px;margin-top:10px}
+.como-label{font-size:11px;font-weight:500;color:#666;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
+.como-text{font-size:12px;color:#555;line-height:1.65}
+.entrega{background:#f0fdf4;border:0.5px solid #bbf7d0;border-radius:8px;padding:10px 12px;margin-top:10px}
+.entrega-text{font-size:12px;color:#166534;line-height:1.6}
+.pill{display:inline-block;font-size:11px;font-weight:500;padding:2px 7px;border-radius:4px;margin:2px 2px 2px 0}
+.p-blue{background:#dbeafe;color:#1e40af}
+.p-teal{background:#d1fae5;color:#065f46}
+.p-purple{background:#ede9fe;color:#5b21b6}
+.p-gray{background:#f3f4f6;color:#374151}
+.p-amber{background:#fef3c7;color:#92400e}
+.p-coral{background:#fff7ed;color:#9a3412}
+.p-red{background:#fee2e2;color:#991b1b}
+
+.resumo-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:1.5rem}
+.resumo-card{background:#f5f5f5;border-radius:8px;padding:12px;text-align:center}
+.resumo-val{font-size:20px;font-weight:500;color:#1a1a1a}
+.resumo-label{font-size:11px;color:#666;margin-top:3px}
+.goal-box{background:#fffbeb;border:0.5px solid #fcd34d;border-radius:8px;padding:12px 14px;margin-bottom:1rem}
+.goal-text{font-size:13px;color:#92400e;line-height:1.6}
+
+.check-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid #eee;cursor:pointer;user-select:none}
+.check-row:last-child{border-bottom:none}
+.check-box{width:18px;height:18px;border:0.5px solid #ccc;border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;transition:all .15s}
+.check-row.done .check-box{background:#d1fae5;border-color:#6ee7b7;color:#065f46}
+.check-label{font-size:13px;color:#1a1a1a;line-height:1.5}
+.check-row.done .check-label{color:#999;text-decoration:line-through}
+.check-sub{font-size:11px;color:#999;margin-top:2px}
+.progress-bar-wrap{height:6px;background:#e5e7eb;border-radius:3px;margin-bottom:1.5rem}
+.progress-bar-fill{height:100%;border-radius:3px;background:#10b981;transition:width .3s}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Semana 1 — TJSC 2026 · Arquiteto</h1>
+<div class="page-sub">31 mar – 6 abr · Diagnóstico + base nos temas principais</div>
+
+<div class="resumo-grid">
+  <div class="resumo-card"><div class="resumo-val">6</div><div class="resumo-label">dias de estudo</div></div>
+  <div class="resumo-card"><div class="resumo-val">3</div><div class="resumo-label">disciplinas</div></div>
+  <div class="resumo-card"><div class="resumo-val">~21h</div><div class="resumo-label">horas totais</div></div>
+  <div class="resumo-card"><div class="resumo-val">60</div><div class="resumo-label">questões de treino</div></div>
+</div>
+
+<div class="goal-box">
+  <div class="goal-text">Objetivo da semana 1: diagnóstico real do que você sabe e base sólida nos três temas principais. Não tente cobrir tudo — aprofunde o que for estudar. Ao final da semana você faz 20 questões por disciplina e registra o % de acerto para guiar a semana 2.</div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('seg', this)">Segunda</button>
+  <button class="nav-btn" onclick="showPanel('ter', this)">Terça</button>
+  <button class="nav-btn" onclick="showPanel('qua', this)">Quarta</button>
+  <button class="nav-btn" onclick="showPanel('qui', this)">Quinta</button>
+  <button class="nav-btn" onclick="showPanel('sex', this)">Sexta</button>
+  <button class="nav-btn" onclick="showPanel('sab', this)">Sábado</button>
+  <button class="nav-btn" onclick="showPanel('checklist', this)">Checklist</button>
+</div>
+
+<!-- SEGUNDA -->
+<div id="panel-seg" class="panel active">
+  <div class="day-header">
+    <div><div class="day-title">Segunda-feira</div><div class="day-date">31 mar · Diagnóstico + Projeto Arquitetônico</div></div>
+    <span class="day-badge p-blue">Projeto Arq.</span>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Manhã — Bloco 1</span>
+      <span class="bloco-tema">Diagnóstico: resolva 20 questões sem estudar nada</span>
+      <span class="bloco-tag p-gray">50 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <p>Antes de qualquer conteúdo, faça um diagnóstico honesto. Acesse QConcursos ou Gran Questões e filtre: banca FGV + cargo arquiteto ou engenharia. Resolva 20 questões mistas cobrindo todas as disciplinas do edital.</p>
+      <ul>
+        <li>Não consulte nada durante as questões</li>
+        <li>Anote quantas acertou por tema (ex: acertei 3 de 5 de urbanismo, 1 de 5 de normas)</li>
+        <li>Esse mapa de acertos vai dizer onde focar mais energia nas semanas seguintes</li>
+      </ul>
+      <div class="como-estudar">
+        <div class="como-label">Por que começar assim</div>
+        <div class="como-text">Estudar sem saber onde está é navegar sem mapa. O diagnóstico evita que você passe horas em conteúdo que já sabe enquanto deixa os buracos reais sem atenção.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Manhã — Bloco 2</span>
+      <span class="bloco-tema">Projeto arquitetônico: morfologia urbana</span>
+      <span class="bloco-tag p-blue">60 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <p>Foco total em morfologia e estrutura urbana — base de tudo no módulo de projeto arquitetônico (12 questões na prova).</p>
+      <ul>
+        <li><strong>Forma urbana:</strong> malha regular, orgânica, mista — exemplos brasileiros e históricos</li>
+        <li><strong>Elementos morfológicos:</strong> lote, quadra, logradouro, parcelamento, cheios e vazios</li>
+        <li><strong>Escalas de intervenção:</strong> lote → quadra → bairro → cidade → região metropolitana</li>
+        <li><strong>Kevin Lynch — A Imagem da Cidade:</strong> 5 elementos (caminhos, bordas, bairros, nós, marcos) — FGV cobrou isso em 2023</li>
+        <li><strong>Relação espaço público × privado:</strong> recuos, afastamentos, taxa de ocupação</li>
+      </ul>
+      <div class="como-estudar">
+        <div class="como-label">Como estudar este bloco</div>
+        <div class="como-text">Leia o conteúdo por 25 min, feche o material, pegue uma folha e escreva tudo que lembra (recall ativo). Compare com o original — o que ficou em branco vira flashcard Anki.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Tarde — Bloco 3</span>
+      <span class="bloco-tema">Projeto arquitetônico: sistema viário e mobilidade</span>
+      <span class="bloco-tag p-blue">60 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <ul>
+        <li><strong>Hierarquia viária:</strong> arterial, coletora, local, de pedestre — funções e dimensionamentos básicos</li>
+        <li><strong>Mobilidade urbana sustentável:</strong> conceito, modos ativos (a pé, bicicleta), transporte público</li>
+        <li><strong>Lei 12.587/12 — Política Nacional de Mobilidade Urbana:</strong> princípios, diretrizes, instrumentos — leia os arts. 1° a 7° diretamente na lei</li>
+        <li><strong>Calçadas:</strong> faixa de serviço, faixa livre (mínimo 1,20 m), faixa de acesso</li>
+        <li><strong>Ciclomobilidade:</strong> ciclovia vs ciclofaixa vs ciclorota — definições legais</li>
+      </ul>
+      <div class="como-estudar">
+        <div class="como-label">Como estudar este bloco</div>
+        <div class="como-text">Para leis curtas como a 12.587/12, leitura direta vale mais que resumo. Leia o texto da lei, sublinhe os artigos com números ou prazos, e faça flashcards só com o que tem número.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Tarde — Bloco 4</span>
+      <span class="bloco-tema">10 questões de projeto arquitetônico + Anki</span>
+      <span class="bloco-tag p-gray">30 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <ul>
+        <li>Resolva 10 questões FGV sobre morfologia urbana e mobilidade (QConcursos)</li>
+        <li>Anote o % de acerto</li>
+        <li>Crie flashcards Anki para cada conceito que errou</li>
+        <li>Meta do dia: acertar pelo menos 6 das 10</li>
+      </ul>
+      <div class="entrega">
+        <div class="entrega-text">Entrega do dia: % de acerto anotado + primeiros flashcards criados no deck "Projeto Arq. + Urbanismo"</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TERÇA -->
+<div id="panel-ter" class="panel">
+  <div class="day-header">
+    <div><div class="day-title">Terça-feira</div><div class="day-date">1 abr · Urbanismo — Estatuto da Cidade</div></div>
+    <span class="day-badge p-blue">Urbanismo</span>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Manhã — Bloco 1</span>
+      <span class="bloco-tema">Estatuto da Cidade — estrutura e função social</span>
+      <span class="bloco-tag p-blue">70 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <p>Leia a Lei 10.257/01 diretamente — caps. I e II. Não use resumo agora, o texto é curto e direto.</p>
+      <ul>
+        <li><strong>Art. 1° e 2°:</strong> objeto e diretrizes gerais (memorize pelo menos 5 diretrizes)</li>
+        <li><strong>Art. 4°:</strong> instrumentos — grupos: planejamento municipal, institutos tributários, institutos jurídicos, estudo prévio. FGV cobra classificação dos instrumentos.</li>
+        <li><strong>Função social da propriedade:</strong> conceito constitucional (art. 182 CF) aplicado ao plano diretor</li>
+        <li><strong>Plano diretor:</strong> obrigatoriedade (cidades > 20.000 hab., turísticas, metropolitanas), conteúdo mínimo</li>
+        <li><strong>PEUC:</strong> art. 5° e 6° — sequência obrigatória antes do IPTU progressivo</li>
+      </ul>
+      <div class="como-estudar">
+        <div class="como-label">Como estudar</div>
+        <div class="como-text">Leia o artigo → feche → escreva o que entendeu com suas palavras → abra e compare. Para os instrumentos do art. 4°, faça uma lista à mão agrupando por categoria.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Manhã — Bloco 2</span>
+      <span class="bloco-tema">Instrumentos urbanísticos — os 5 que mais caem</span>
+      <span class="bloco-tag p-blue">60 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <ul>
+        <li><strong>IPTU progressivo no tempo (art. 7°):</strong> alíquota cresce por até 5 anos; após isso, desapropriação com títulos. Só após PEUC notificado.</li>
+        <li><strong>Outorga onerosa (arts. 28–31):</strong> coeficiente básico × máximo. Município cobra pela diferença. Recurso vai ao Fundo de Urbanização.</li>
+        <li><strong>Operações urbanas consorciadas (arts. 32–34):</strong> parceria público-privada para requalificação. Instrumento: CEPAC.</li>
+        <li><strong>Direito de preempção (arts. 25–27):</strong> preferência do município na compra. Prazo máximo: 5 anos, renovável.</li>
+        <li><strong>EIV — Estudo de Impacto de Vizinhança (arts. 36–38):</strong> obrigatório para grandes empreendimentos. Avalia adensamento, tráfego, paisagem, patrimônio.</li>
+      </ul>
+      <div class="como-estudar">
+        <div class="como-label">Técnica para este bloco</div>
+        <div class="como-text">Monte um mapa mental no papel: centro = "instrumentos urbanísticos", 5 ramos = cada instrumento. Em cada ramo: artigo, conceito em 1 frase, ponto de atenção. Cole na parede.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Tarde — Bloco 3</span>
+      <span class="bloco-tema">Lei de Parcelamento do Solo — Lei 6.766/79</span>
+      <span class="bloco-tag p-blue">50 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <ul>
+        <li><strong>Loteamento vs desmembramento:</strong> loteamento abre novas vias; desmembramento aproveita as existentes</li>
+        <li><strong>Áreas não parceláveis:</strong> terrenos alagadiços, inclinação > 30%, faixa de domínio, áreas de preservação</li>
+        <li><strong>Percentuais obrigatórios:</strong> áreas públicas (vias, espaços livres, equipamentos) mínimo 35% da gleba</li>
+        <li><strong>Zona urbana x expansão urbana x rural:</strong> onde pode e não pode parcelar para fins urbanos</li>
+      </ul>
+      <div class="entrega">
+        <div class="entrega-text">Entrega do dia: mapa mental dos instrumentos urbanísticos pronto + 10 questões sobre Estatuto da Cidade resolvidas + flashcards dos artigos-chave criados no Anki</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUARTA -->
+<div id="panel-qua" class="panel">
+  <div class="day-header">
+    <div><div class="day-title">Quarta-feira</div><div class="day-date">2 abr · Língua Portuguesa — base FGV</div></div>
+    <span class="day-badge p-gray">Português</span>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Manhã — Bloco 1</span>
+      <span class="bloco-tema">Interpretação de textos técnicos e oficiais</span>
+      <span class="bloco-tag p-gray">60 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <p>FGV usa textos de jornais, documentos oficiais e legislação como base. A maioria das questões de português é de interpretação — não de gramática isolada.</p>
+      <ul>
+        <li><strong>Leitura ativa:</strong> identifique tema, tese, argumentos e conclusão</li>
+        <li><strong>Inferência:</strong> o que o texto permite concluir x o que ele não diz — FGV adora questões de "o texto afirma que..." com alternativas quase certas</li>
+        <li><strong>Coesão e coerência:</strong> conectivos de adição (e, também, além disso), oposição (mas, porém, entretanto), conclusão (portanto, logo, assim)</li>
+        <li><strong>Prática:</strong> leia um trecho de lei do dia anterior como se fosse uma questão de interpretação</li>
+      </ul>
+      <div class="como-estudar">
+        <div class="como-label">Estratégia FGV para português</div>
+        <div class="como-text">Leia o enunciado primeiro, depois o texto. Sublinhe as palavras-chave da pergunta. Elimine alternativas absurdas. FGV quase sempre tem 2 alternativas muito parecidas — a diferença está em um advérbio ou conectivo.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Manhã — Bloco 2</span>
+      <span class="bloco-tema">Concordância verbal e nominal</span>
+      <span class="bloco-tag p-gray">50 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <ul>
+        <li><strong>Sujeito composto antes do verbo:</strong> verbo no plural (Ana e João foram)</li>
+        <li><strong>Sujeito composto após o verbo:</strong> pode concordar com o mais próximo (Chegou o aluno e a professora)</li>
+        <li><strong>Sujeito coletivo:</strong> verbo no singular (A multidão gritou)</li>
+        <li><strong>Expressões partitivas (a maioria de, parte de):</strong> verbo pode concordar com o núcleo ou com o coletivo</li>
+        <li><strong>Concordância nominal — casos especiais:</strong> "é proibido", "é necessário", "obrigado/obrigada", "muito" com substantivos</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Tarde — Bloco 3</span>
+      <span class="bloco-tema">Crase, regência e colocação pronominal</span>
+      <span class="bloco-tag p-gray">50 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <ul>
+        <li><strong>Crase obrigatória:</strong> antes de feminino que aceita "a" (à escola, à tarde)</li>
+        <li><strong>Crase proibida:</strong> antes de masculino, verbo, pronome pessoal, "uma", palavras no plural sem artigo</li>
+        <li><strong>Crase facultativa:</strong> antes de pronomes possessivos femininos, nomes de cidades sem artigo</li>
+        <li><strong>Regência verbal — mais cobrados:</strong> assistir (a), visar (a = almejar / sem prep. = rubricar), aspirar (a), preferir (a), implicar</li>
+        <li><strong>Próclise obrigatória:</strong> após palavras atrativas (não, nenhum, alguém, pronomes relativos, conjunções subordinativas)</li>
+        <li><strong>Ênclise:</strong> início de frase, após vírgula em frase afirmativa</li>
+      </ul>
+      <div class="entrega">
+        <div class="entrega-text">Entrega do dia: 15 questões de português FGV resolvidas (5 interpretação + 5 concordância + 5 crase/regência) + % de acerto anotado por tema</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUINTA -->
+<div id="panel-qui" class="panel">
+  <div class="day-header">
+    <div><div class="day-title">Quinta-feira</div><div class="day-date">3 abr · Legislação PJSC — base obrigatória</div></div>
+    <span class="day-badge p-purple">Legislação PJSC</span>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Manhã — Bloco 1</span>
+      <span class="bloco-tema">Estrutura do Poder Judiciário de SC</span>
+      <span class="bloco-tag p-purple">60 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <p>Candidatos ignoram esse bloco e perdem 6 questões fáceis. É conteúdo decorativo e pontual — vale muito pela baixa concorrência de estudo.</p>
+      <ul>
+        <li><strong>Organização do TJSC:</strong> Tribunal Pleno, Órgão Especial, Câmaras, turmas — composição e competências básicas</li>
+        <li><strong>9 regiões judiciárias de SC:</strong> Florianópolis (I), Criciúma (II), Lages (III), Joinville (IV), Blumenau (V), Itajaí (VI), Canoinhas (VII), Chapecó (VIII), Joaçaba (IX)</li>
+        <li><strong>Lei 5.624/79:</strong> estrutura, divisão em comarcas, entrâncias</li>
+        <li><strong>Corregedoria-Geral da Justiça:</strong> fiscalização e disciplina dos serviços judiciários</li>
+        <li><strong>CNJ:</strong> composição (15 membros), competências, relação com o TJSC</li>
+      </ul>
+      <div class="como-estudar">
+        <div class="como-label">Técnica recomendada</div>
+        <div class="como-text">Acesse o site do TJSC (tjsc.jus.br) e veja o organograma institucional. Visualizar a estrutura real fixa melhor do que ler texto. Depois crie flashcards: "Quantas câmaras tem o TJSC?", "O que é a Corregedoria-Geral?"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Manhã — Bloco 2</span>
+      <span class="bloco-tema">Estatuto dos Servidores SC — Lei 6.745/85</span>
+      <span class="bloco-tag p-purple">60 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <ul>
+        <li><strong>Cargo, emprego e função:</strong> distinção conceitual</li>
+        <li><strong>Provimento de cargo:</strong> nomeação, promoção, readaptação, reversão, reintegração, recondução, aproveitamento</li>
+        <li><strong>Direitos dos servidores:</strong> férias (30 dias), licenças, vencimento, adicional de tempo de serviço</li>
+        <li><strong>Deveres:</strong> assiduidade, pontualidade, discrição, urbanidade, lealdade — FGV cobra os verbos exatos da lei</li>
+        <li><strong>Proibições:</strong> acumular cargos (regra e exceções constitucionais), exercer comércio, receber vantagens indevidas</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Tarde — Bloco 3</span>
+      <span class="bloco-tema">Código de Ética PJSC — Resolução TJ 22/2021</span>
+      <span class="bloco-tag p-purple">40 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <p>Documento curto e muito cobrado — leia na íntegra. Disponível no site do TJSC.</p>
+      <ul>
+        <li><strong>Princípios:</strong> legalidade, impessoalidade, moralidade, publicidade, eficiência + probidade e ética</li>
+        <li><strong>Condutas esperadas:</strong> integridade, transparência, respeito, responsabilidade</li>
+        <li><strong>Condutas vedadas:</strong> usar cargo para benefício pessoal, aceitar presentes além do permitido, conflito de interesses</li>
+        <li><strong>Comissão de Ética:</strong> existência, composição e função no PJSC</li>
+      </ul>
+      <div class="entrega">
+        <div class="entrega-text">Entrega do dia: Resolução TJ 22/21 lida + 10 questões de legislação PJSC resolvidas + deck "Legislação PJSC" criado no Anki com pelo menos 10 cartões</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEXTA -->
+<div id="panel-sex" class="panel">
+  <div class="day-header">
+    <div><div class="day-title">Sexta-feira</div><div class="day-date">4 abr · Revisão + Informática e LGPD</div></div>
+    <span class="day-badge p-teal">Revisão + LGPD</span>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Manhã — Bloco 1</span>
+      <span class="bloco-tema">Revisão rápida dos 4 dias anteriores (recall ativo)</span>
+      <span class="bloco-tag p-gray">40 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <p>Sem abrir material. Pegue uma folha em branco e escreva tudo que lembra de cada dia da semana.</p>
+      <ul>
+        <li>Segunda: morfologia urbana, hierarquia viária, mobilidade</li>
+        <li>Terça: instrumentos urbanísticos (5 principais), Lei 6.766/79</li>
+        <li>Quarta: concordância, crase, regência, interpretação</li>
+        <li>Quinta: estrutura TJSC, Estatuto dos Servidores, Código de Ética</li>
+      </ul>
+      <p>O que ficou em branco = revisão prioritária na semana 2. Isso é normal — o objetivo não é lembrar tudo, é identificar os gaps.</p>
+    </div>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Manhã — Bloco 2</span>
+      <span class="bloco-tema">LGPD — Lei 13.709/18: conceitos fundamentais</span>
+      <span class="bloco-tag p-teal">60 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <ul>
+        <li><strong>Dado pessoal × dado pessoal sensível:</strong> sensível = raça, saúde, biometria, opinião política, crença</li>
+        <li><strong>Agentes de tratamento:</strong> titular, controlador, operador, encarregado (DPO)</li>
+        <li><strong>Bases legais do tratamento (art. 7°):</strong> consentimento é só uma delas — há 10 bases; para o setor público, a mais comum é "obrigação legal"</li>
+        <li><strong>Direitos do titular (art. 18°):</strong> acesso, correção, exclusão, portabilidade, revogação do consentimento</li>
+        <li><strong>ANPD:</strong> Autoridade Nacional de Proteção de Dados — fiscalização e regulamentação da LGPD</li>
+        <li><strong>Resolução TJ 3/21:</strong> aplica a LGPD ao PJSC — leia o objeto e os princípios</li>
+      </ul>
+      <div class="como-estudar">
+        <div class="como-label">Como estudar LGPD</div>
+        <div class="como-text">Os artigos 5° (definições), 7° (bases legais) e 18° (direitos do titular) são os mais cobrados. Leia esses três artigos diretamente na lei e crie um flashcard para cada inciso com uma definição ou direito específico.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Tarde — Bloco 3</span>
+      <span class="bloco-tema">Informática geral + segurança da informação</span>
+      <span class="bloco-tag p-teal">40 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <ul>
+        <li><strong>Hardware:</strong> processador, memória RAM vs ROM, armazenamento (HD, SSD, nuvem)</li>
+        <li><strong>Software:</strong> sistema operacional, aplicativo, firmware — diferenças</li>
+        <li><strong>Redes:</strong> LAN, WAN, internet — protocolo TCP/IP, DNS (conceitos básicos)</li>
+        <li><strong>Segurança da informação — pilares CID:</strong> Confidencialidade, Integridade, Disponibilidade</li>
+        <li><strong>Ameaças mais cobradas:</strong> phishing, ransomware, malware, engenharia social</li>
+        <li><strong>Boas práticas:</strong> senhas fortes, autenticação em dois fatores, backup regular</li>
+      </ul>
+      <div class="entrega">
+        <div class="entrega-text">Entrega do dia: arts. 5°, 7° e 18° da LGPD lidos + 10 questões de informática/LGPD resolvidas + revisão do Anki em dia</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SÁBADO -->
+<div id="panel-sab" class="panel">
+  <div class="day-header">
+    <div><div class="day-title">Sábado</div><div class="day-date">5 abr · Simulado diagnóstico + análise de erros</div></div>
+    <span class="day-badge p-red">Simulado</span>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Manhã — Bloco 1</span>
+      <span class="bloco-tema">Simulado da semana — 60 questões cronometradas</span>
+      <span class="bloco-tag p-red">120 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <p>Monte um simulado com 60 questões divididas assim, no QConcursos ou Gran:</p>
+      <ul>
+        <li>20 questões — Projeto Arquitetônico e Urbanismo (FGV, qualquer cargo)</li>
+        <li>15 questões — Língua Portuguesa (FGV, nível superior)</li>
+        <li>15 questões — Legislação e Ética Pública (FGV, tribunais)</li>
+        <li>10 questões — Informática e LGPD (FGV, qualquer cargo)</li>
+      </ul>
+      <ul>
+        <li>Coloque o cronômetro: 2 horas no total</li>
+        <li>Ambiente de prova: sem celular, sem consulta, mesa limpa</li>
+        <li>Não pare para checar respostas — termine tudo antes de corrigir</li>
+      </ul>
+      <div class="como-estudar">
+        <div class="como-label">Por que simular com cronômetro</div>
+        <div class="como-text">A prova real dura 4 horas para 80 questões — 3 min por questão. Treinar com tempo real evita que você descubra na prova que fica preso em questões difíceis e perde tempo dos fáceis.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Tarde — Bloco 2</span>
+      <span class="bloco-tema">Análise de erros — o estudo mais importante da semana</span>
+      <span class="bloco-tag p-red">90 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <p>Para cada questão errada, classifique o erro:</p>
+      <ul>
+        <li><strong>Não sabia o conteúdo:</strong> → vira conteúdo prioritário da semana 2 + flashcard Anki</li>
+        <li><strong>Sabia mas errei por distração:</strong> → treine a leitura mais lenta do enunciado</li>
+        <li><strong>Pegadinha de enunciado:</strong> → anote o padrão para reconhecer nas próximas</li>
+      </ul>
+      <p>Monte uma tabela: disciplina · acertos/questões · % de acerto · principal gap identificado.</p>
+      <div class="entrega">
+        <div class="entrega-text">Entrega da semana: tabela de % de acerto por disciplina + lista de gaps para a semana 2 + decks Anki com pelo menos 30 cartões criados no total</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloco" onclick="toggleBloco(this)">
+    <div class="bloco-header">
+      <span class="bloco-hora">Domingo</span>
+      <span class="bloco-tema">Descanso — apenas revisão leve pelo Anki (15 min)</span>
+      <span class="bloco-tag p-gray">15 min</span>
+      <span class="bloco-chevron">▼</span>
+    </div>
+    <div class="bloco-body">
+      <p>Domingo é de descanso. O cérebro consolida memória durante o repouso — não estudar hoje faz parte do método. Abra o Anki, faça as revisões que o app indicar (10–15 min) e feche.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKLIST -->
+<div id="panel-checklist" class="panel">
+  <div class="sec-label">Marque à medida que for concluindo</div>
+  <div style="margin-bottom:1rem">
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+      <span style="font-size:12px;color:#666">Progresso da semana</span>
+      <span style="font-size:12px;font-weight:500;color:#1a1a1a" id="prog-label">0 / 14</span>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+
+  <div id="checklist">
+    <div class="check-row" onclick="toggleCheck(this)"><div class="check-box">✓</div><div><div class="check-label">Segunda — diagnóstico inicial: 20 questões resolvidas e % anotado</div><div class="check-sub">Seg, 31 mar</div></div></div>
+    <div class="check-row" onclick="toggleCheck(this)"><div class="check-box">✓</div><div><div class="check-label">Segunda — morfologia urbana e Kevin Lynch estudados</div><div class="check-sub">Seg, 31 mar</div></div></div>
+    <div class="check-row" onclick="toggleCheck(this)"><div class="check-box">✓</div><div><div class="check-label">Segunda — sistema viário e Lei 12.587/12 estudados + 10 questões</div><div class="check-sub">Seg, 31 mar</div></div></div>
+    <div class="check-row" onclick="toggleCheck(this)"><div class="check-box">✓</div><div><div class="check-label">Terça — Estatuto da Cidade: estrutura, função social, plano diretor</div><div class="check-sub">Ter, 1 abr</div></div></div>
+    <div class="check-row" onclick="toggleCheck(this)"><div class="check-box">✓</div><div><div class="check-label">Terça — 5 instrumentos urbanísticos + mapa mental no papel</div><div class="check-sub">Ter, 1 abr</div></div></div>
+    <div class="check-row" onclick="toggleCheck(this)"><div class="check-box">✓</div><div><div class="check-label">Terça — Lei 6.766/79 (parcelamento do solo) estudada</div><div class="check-sub">Ter, 1 abr</div></div></div>
+    <div class="check-row" onclick="toggleCheck(this)"><div class="check-box">✓</div><div><div class="check-label">Quarta — interpretação de textos + concordância + crase/regência</div><div class="check-sub">Qua, 2 abr</div></div></div>
+    <div class="check-row" onclick="toggleCheck(this)"><div class="check-box">✓</div><div><div class="check-label">Quarta — 15 questões de português resolvidas e % anotado</div><div class="check-sub">Qua, 2 abr</div></div></div>
+    <div class="check-row" onclick="toggleCheck(this)"><div class="check-box">✓</div><div><div class="check-label">Quinta — estrutura TJSC + Estatuto dos Servidores estudados</div><div class="check-sub">Qui, 3 abr</div></div></div>
+    <div class="check-row" onclick="toggleCheck(this)"><div class="check-box">✓</div><div><div class="check-label">Quinta — Resolução TJ 22/21 (Código de Ética) lida na íntegra</div><div class="check-sub">Qui, 3 abr</div></div></div>
+    <div class="check-row" onclick="toggleCheck(this)"><div class="check-box">✓</div><div><div class="check-label">Sexta — recall ativo dos 4 dias anteriores (folha em branco)</div><div class="check-sub">Sex, 4 abr</div></div></div>
+    <div class="check-row" onclick="toggleCheck(this)"><div class="check-box">✓</div><div><div class="check-label">Sexta — arts. 5°, 7° e 18° da LGPD lidos + informática básica</div><div class="check-sub">Sex, 4 abr</div></div></div>
+    <div class="check-row" onclick="toggleCheck(this)"><div class="check-box">✓</div><div><div class="check-label">Sábado — simulado de 60 questões com cronômetro (2h)</div><div class="check-sub">Sáb, 5 abr</div></div></div>
+    <div class="check-row" onclick="toggleCheck(this)"><div class="check-box">✓</div><div><div class="check-label">Sábado — análise de erros: tabela por disciplina com % de acerto</div><div class="check-sub">Sáb, 5 abr</div></div></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function showPanel(id, btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+function toggleBloco(el){
+  el.classList.toggle('open');
+}
+function toggleCheck(el){
+  el.classList.toggle('done');
+  updateProgress();
+}
+function updateProgress(){
+  const total=document.querySelectorAll('.check-row').length;
+  const done=document.querySelectorAll('.check-row.done').length;
+  document.getElementById('prog-label').textContent=done+' / '+total;
+  document.getElementById('prog-fill').style.width=Math.round(done/total*100)+'%';
+}
+</script>
+</body>
+</html>
